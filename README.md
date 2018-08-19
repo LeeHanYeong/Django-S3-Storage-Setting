@@ -13,7 +13,7 @@
 - [django-storages](https://github.com/jschneier/django-storages)
 - [django-sass-processor](https://github.com/jrief/django-sass-processor)
 - [django-compressor](https://github.com/django-compressor/django-compressor)
-- libsass
+- [libsass](https://github.com/sass/libsass-python)
 
 ### Secret JSON file
 
@@ -45,8 +45,25 @@ pip install -r requirements.txt
 템플릿에서 `sass_src` 템플릿 태그 사용
 
 ```django
+{% load sass_tags %}
+
 <link href="{% sass_src 'scss/example.scss' %}" rel="stylesheet" type="text/css">
 ```
+
+## 개발 시 사용법
+
+`libsass`와 `django-compressor`가 `STATIC_ROOT`를 통해 파일을 제공함
+
+`DEFAULT_FILE_STORAGE`와 `STATICFILES_STORAGE`의 설정은 로컬 컴파일을 사용할 경우, `staticfiles`의 `FileSystemStorage`를 사용하도록 한다.
+
+### 이 프로젝트로 실행 시
+
+특별한 설정 없이 `runserver`실행
+
+```
+python manage.py runserver
+```
+
 
 ## 배포 시 사용법
 
@@ -61,11 +78,9 @@ python manage.py compilescss
 python manage.py collectstatic 
 ```
 
-S3에 파일이 올라가 있다면, `libsass`와 `django-compressor`는 production환경의 애플리케이션에는 설치되어 있지 않아도 됨. (`sass_src`태그는 단순히 파일 위치만을 참조) <- 확인 필요
+S3에 파일이 올라가 있다면, `libsass`와 `django-compressor`는 production환경의 애플리케이션에는 설치되어 있지 않아도 됨. (`sass_src`태그는 단순히 파일 위치만을 참조)
 
+### 이 프로젝트로 실행 시
 
-## 개발과정에서 사용법
-
-`libsass`와 `django-compressor`가 `STATIC_ROOT`를 통해 파일을 제공함
-
-`DEFAULT_FILE_STORAGE`와 `STATICFILES_STORAGE`의 설정은 로컬 컴파일을 사용할 경우, `staticfiles`의 `FileSystemStorage`를 사용하도록 한다.
+- WSGI사용시 모듈은 `config.settings.deploy`를 사용
+- runserver로 테스트 하고 싶다면 `export DJANGO_SETTINGS_MODULE=config.settings.deploy`세팅 후 적용
